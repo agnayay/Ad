@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Panchhi's Journey | A Birthday Story</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Cormorant Garamond', serif;
+            background: #0a0a14;
+            color: #f8f3e6;
+        }
+
+        /* Scene Container */
+        .scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .scene.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Background Layers */
+        .bg-layer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -3;
+        }
+
+        .bg-color {
+            background: linear-gradient(135deg, #1a0f2a 0%, #0c0814 100%);
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #d4af37;
+            border-radius: 50%;
+            animation: float 8s infinite ease-in-out;
+            opacity: 0.4;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-20px) translateX(10px); }
+        }
+
+        /* Typography */
+        .title {
+            font-family: 'Cinzel', serif;
+            font-size: 4.5rem;
+            font-weight: 700;
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
+            letter-spacing: 2px;
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards;
+        }
+
+        .quote {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            text-align: center;
+            max-width: 600px;
+            color: #e8dfc8;
+            margin-bottom: 50px;
+            opacity: 0;
+            animation: fadeInUp 2s ease 0.5s forwards;
+            font-weight: 300;
+        }
+
+        .story-text {
+            font-size: 1.6rem;
+            line-height: 1.5;
+            text-align: center;
+            max-width: 700px;
+            color: #f0e9d7;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(20, 15, 30, 0.7);
+            border-radius: 10px;
+            border-left: 3px solid #d4af37;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease forwards;
+        }
+
+        .final-message {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            color: #d4af37;
+            text-align: center;
+            max-width: 800px;
+            line-height: 1.4;
+            margin-top: 40px;
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            opacity: 0;
+            animation: fadeInUp 2s ease forwards;
+        }
+
+        /* Buttons */
+        .story-btn {
+            font-family: 'Cinzel', serif;
+            font-size: 1.3rem;
+            color: #d4af37;
+            background: transparent;
+            border: 2px solid #d4af37;
+            border-radius: 50px;
+            padding: 15px 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 2s ease 1s forwards;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-btn:hover {
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .story-btn:active {
+            transform: translateY(0);
+        }
+
+        .nav-btn {
+            position: fixed;
+            bottom: 30px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .nav-btn:hover {
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        #prevBtn {
+            left: 30px;
+        }
+
+        #nextBtn {
+            right: 30px;
+        }
+
+        /* Scene Illustrations */
+        .scene-illustration {
+            width: 90%;
+            max-width: 800px;
+            height: 50vh;
+            position: relative;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            animation: fadeIn 2s ease forwards;
+        }
+
+        /* Map Scene */
+        .map-container {
+            width: 90%;
+            max-width: 900px;
+            height: 60vh;
+            position: relative;
+            background: rgba(30, 25, 45, 0.5);
+            border-radius: 15px;
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            overflow: hidden;
+        }
+
+        .journey-path {
+            position: absolute;
+            width: 80%;
+            height: 4px;
+            background: linear-gradient(90deg, #d4af37, transparent);
+            top: 50%;
+            left: 10%;
+            opacity: 0.3;
+        }
+
+        .checkpoint {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #1a0f2a;
+            border: 3px solid #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d4af37;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .checkpoint.active {
+            background: #d4af37;
+            color: #1a0f2a;
+            box-shadow: 0 0 20px #d4af37;
+            transform: scale(1.2);
+        }
+
+        .pigeon-guide {
+            position: absolute;
+            font-size: 2.5rem;
+            z-index: 5;
+            transition: all 0.5s ease-in-out;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+            pointer-events: none;
+        }
+
+        /* Character Styles */
+        .character {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+
+        .boy {
+            background: #8b4513;
+            width: 40px;
+            height: 100px;
+            border-radius: 20px;
+        }
+
+        .girl {
+            background: #d4a5a5;
+            width: 35px;
+            height: 95px;
+            border-radius: 17px;
+        }
+
+        /* Specific Scene Backgrounds */
+        .temple-bg {
+            background: linear-gradient(135deg, #2a1b3a 0%, #1a1025 100%);
+        }
+
+        .park-bg {
+            background: linear-gradient(135deg, #2a3a1b 0%, #1a2510 100%);
+        }
+
+        .home-bg {
+            background: linear-gradient(135deg, #3a2b1b 0%, #251a10 100%);
+        }
+
+        .vrindavan-bg {
+            background: linear-gradient(135deg, #1b3a3a 0%, #102525 100%);
+        }
+
+        .restaurant-bg {
+            background: linear-gradient(135deg, #3a1b2a 0%, #25101a 100%);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes gentleMove {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes trainMove {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(100px); }
+        }
+
+        /* Audio Controls */
+        .audio-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            color: #d4af37;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .audio-control:hover {
+            background: rgba(212, 175, 55, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .title { font-size: 3rem; }
+            .quote { font-size: 1.4rem; }
+            .story-text { font-size: 1.3rem; }
+            .final-message { font-size: 1.8rem; }
+            .story-btn { font-size: 1.1rem; padding: 12px 30px; }
+            .nav-btn { bottom: 20px; padding: 10px 20px; }
+            #prevBtn { left: 20px; }
+            #nextBtn { right: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .title { font-size: 2.5rem; }
+            .quote { font-size: 1.2rem; }
+            .map-container { height: 50vh; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Audio Element -->
+    <audio id="bgMusic" loop>
+        <source src="https://audio.jukehost.co.uk/Vosb0X6Jj1FpFvLvX36K9LJ5sU9plzxu" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Audio Control -->
+    <div class="audio-control" id="audioControl" aria-label="Toggle background music" role="button" tabindex="0">
+        <i class="fas fa-volume-mute"></i>
+    </div>
+
+    <!-- Scene 1: Welcome -->
+    <div class="scene active" id="scene1">
+        <div class="bg-layer bg-color"></div>
+        <div class="particles" id="welcomeParticles"></div>
+
+        <h1 class="title">WELCOME</h1>
+        <div class="quote">"With every day you live,<br>I wish you get the best of it…"</div>
+        <button class="story-btn" id="enterWorldBtn">Enter to the World of Panchhi</button>
+    </div>
+
+    <!-- Scene 2: Map Journey -->
+    <div class="scene" id="scene2">
+        <div class="bg-layer bg-color"></div>
+
+        <div class="map-container" id="mapContainer">
+            <div class="journey-path"></div>
+            <div class="pigeon-guide" id="pigeon">🕊️</div>
+
+            <div class="checkpoint" id="cp1" style="top: 20%; left: 15%;">1</div>
+            <div class="checkpoint" id="cp2" style="top: 40%; left: 30%;">2</div>
+            <div class="checkpoint" id="cp3" style="top: 60%; left: 50%;">3</div>
+            <div class="checkpoint" id="cp4" style="top: 40%; left: 70%;">4</div>
+            <div class="checkpoint" id="cp5" style="top: 20%; left: 85%;">5</div>
+        </div>
+
+        <div class="story-text" id="mapText">
+            Follow Panchhi's journey through five precious memories...
+        </div>
+
+        <button class="nav-btn" id="startJourneyBtn">Begin Journey</button>
+    </div>
+
+    <!-- Scene 3: Kalka Temple -->
+    <div class="scene" id="scene3">
+        <div class="bg-layer temple-bg"></div>
+
+        <div class="scene-illustration" id="templeScene">
+            <!-- Temple illustration will be created with CSS/JS -->
+        </div>
+
+        <div class="story-text">
+            "For every prayer that has been chanted for your victories..."
+        </div>
+
+        <button class="nav-btn" id="prevBtn3">Previous</button>
+        <button class="nav-btn" id="nextBtn3">Next</button>
+    </div>
+
+    <!-- Scene 4: Kota Express -->
+    <div class="scene" id="scene4">
+        <div class="bg-layer park-bg"></div>
+
+        <div class="scene-illustration" id="trainScene">
+            <!-- Train illustration -->
+        </div>
+
+        <div class="story-text">
+            "For every moment that has meaning more than a life..."
+        </div>
+
+        <button class="nav-btn" id="prevBtn4">Previous</button>
+        <button class="nav-btn" id="nextBtn4">Next</button>
+    </div>
+
+    <!-- Scene 5: Tiffin Moment -->
+    <div class="scene" id="scene5">
+        <div class="bg-layer home-bg"></div>
+
+        <div class="scene-illustration" id="tiffinScene">
+            <!-- Tiffin scene illustration -->
+        </div>
+
+        <div class="story-text">
+            "For every bite that was missing in my lunch..."
+        </div>
+
+        <button class="nav-btn" id="prevBtn5">Previous</button>
+        <button class="nav-btn" id="nextBtn5">Next</button>
+    </div>
+
+    <!-- Scene 6: Vrindavan -->
+    <div class="scene" id="scene6">
+        <div class="bg-layer vrindavan-bg"></div>
+
+        <div class="scene-illustration" id="vrindavanScene">
+            <!-- Vrindavan illustration -->
+        </div>
+
+        <div class="story-text">
+            "From the heart that has been lost in Vrindavana, stopping the time..."
+        </div>
+
+        <button class="nav-btn" id="prevBtn6">Previous</button>
+        <button class="nav-btn" id="nextBtn6">Next</button>
+    </div>
+
+    <!-- Scene 7: Final Birthday -->
+    <div class="scene" id="scene7">
+        <div class="bg-layer restaurant-bg"></div>
+        <div class="particles" id="finalParticles"></div>
+
+        <div class="scene-illustration" id="finalScene">
+            <!-- Final restaurant illustration -->
+        </div>
+
+        <div class="final-message">
+            "With all myself…<br>
+            Wishing you a very Happy Birthday, Panchhi 🕊️"
+        </div>
+
+        <button class="nav-btn" id="prevBtn7">Previous</button>
+    </div>
+
+    <script>
+        // Initialize variables
+        let currentScene = 1;
+        const totalScenes = 7;
+        const bgMusic = document.getElementById('bgMusic');
+        const audioControl = document.getElementById('audioControl');
+        let isPlaying = false;
+
+        // Create floating particles
+        function createParticles(containerId, count, clearFirst = false) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (clearFirst) container.innerHTML = '';
+
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particle.style.opacity = `${0.2 + Math.random() * 0.3}`;
+                container.appendChild(particle);
+            }
+        }
+
+        // Switch scenes
+        function switchScene(newScene) {
+            if (newScene < 1 || newScene > totalScenes) return;
+
+            // Hide current scene
+            const curr = document.getElementById(`scene${currentScene}`);
+            if (curr) curr.classList.remove('active');
+
+            // Show new scene
+            const next = document.getElementById(`scene${newScene}`);
+            if (next) next.classList.add('active');
+            currentScene = newScene;
+
+            // Update map checkpoints
+            updateMapProgress(newScene);
+
+            // Special animations for specific scenes
+            if (newScene === 2) {
+                initMapScene();
+            } else if (newScene === 7) {
+                // Clear previous final particles to prevent accumulation
+                createParticles('finalParticles', 50, true);
+            }
+        }
+
+        // Map progress visualization
+        function updateMapProgress(scene) {
+            const checkpoints = document.querySelectorAll('.checkpoint');
+            checkpoints.forEach(cp => cp.classList.remove('active'));
+
+            if (scene >= 3) document.getElementById('cp1').classList.add('active');
+            if (scene >= 4) document.getElementById('cp2').classList.add('active');
+            if (scene >= 5) document.getElementById('cp3').classList.add('active');
+            if (scene >= 6) document.getElementById('cp4').classList.add('active');
+            if (scene >= 7) document.getElementById('cp5').classList.add('active');
+
+            // Move pigeon — compute coordinates relative to the map container
+            const pigeon = document.getElementById('pigeon');
+            // choose checkpoint index corresponding to scene progress on map: scene 3 -> cp1, 4->cp2 ...
+            const cpIndex = Math.min(Math.max(scene - 2, 1), 5);
+            const cp = document.getElementById(`cp${cpIndex}`);
+            const container = document.getElementById('mapContainer');
+
+            if (cp && pigeon && container) {
+                const containerRect = container.getBoundingClientRect();
+                const cpRect = cp.getBoundingClientRect();
+
+                // left/top relative to container
+                const left = cpRect.left - containerRect.left + (cpRect.width / 2) - (pigeon.offsetWidth / 2);
+                const top = cpRect.top - containerRect.top + (cpRect.height / 2) - (pigeon.offsetHeight / 2);
+
+                pigeon.style.left = `${left}px`;
+                pigeon.style.top = `${top}px`;
+            }
+        }
+
+        // Initialize map scene
+        function initMapScene() {
+            // Make the first checkpoint active visually
+            updateMapProgress(3);
+        }
+
+        // Audio control
+        function toggleAudio() {
+            if (isPlaying) {
+                bgMusic.pause();
+                audioControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                bgMusic.play().then(() => {
+                    // played
+                }).catch(() => {
+                    // autoplay blocked; user needs to click to allow audio
+                    console.log("Autoplay prevented. User interaction required to start audio.");
+                });
+                audioControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Event Listeners
+        document.getElementById('enterWorldBtn').addEventListener('click', () => switchScene(2));
+        document.getElementById('startJourneyBtn').addEventListener('click', () => switchScene(3));
+
+        // Navigation buttons
+        for (let i = 3; i <= 7; i++) {
+            const prevBtn = document.getElementById(`prevBtn${i}`);
+            const nextBtn = document.getElementById(`nextBtn${i}`);
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => switchScene(i - 1));
+            }
+            if (nextBtn && i < 7) {
+                nextBtn.addEventListener('click', () => switchScene(i + 1));
+            }
+        }
+
+        // Audio control event
+        audioControl.addEventListener('click', toggleAudio);
+
+        // Keyboard navigation (left/right arrows)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                switchScene(Math.min(currentScene + 1, totalScenes));
+            } else if (e.key === 'ArrowLeft') {
+                switchScene(Math.max(currentScene - 1, 1));
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            createParticles('welcomeParticles', 30);
+
+            // Try to autoplay music with user gesture (only once)
+            document.body.addEventListener('click', () => {
+                if (!isPlaying) {
+                    bgMusic.play().then(() => {
+                        isPlaying = true;
+                        audioControl.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    }).catch(e => {
+                        console.log("Audio autoplay requires explicit user interaction");
+                    });
+                }
+            }, { once: true });
+        });
+
+        // Mobile touch optimizations
+        document.addEventListener('touchstart', () => {}, { passive: true });
+
+        // Prevent zoom on mobile (legacy gesture event) — keep safe guard
+        document.addEventListener('gesturestart', (e) => {
+            if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        });
+    </script>
+</body>
+</html>
